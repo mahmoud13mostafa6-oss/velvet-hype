@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Velvet Hype | مكياج وعطور</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--plum:#9b2be0;--pink:#ff4fa0;--gold:#e8c26a;--bg:#fffbf3;--ink:#2a1030;--wa:#25D366}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',sans-serif}
+body{background:var(--bg);color:var(--ink);padding-bottom:110px}
+.notice{background:#fff3cd;color:#664d03;text-align:center;font-size:.8rem;padding:6px 10px;font-weight:600}
+header{background:#fffbf3;text-align:center;padding:14px 16px 18px;border-bottom:4px solid transparent;border-image:linear-gradient(90deg,#ff4fa0,#9b2be0) 1}
+.logo{height:150px;width:auto;max-width:90%;object-fit:contain}
+header p{color:#7a3a8c;font-weight:700;margin-top:2px}
+.wrap{max-width:1100px;margin:0 auto;padding:14px}
+.search{position:relative;margin:16px 0}
+.search input{width:100%;padding:13px 20px;border:2px solid #f3c6e0;border-radius:28px;font-size:1rem;outline:none;background:#fff}
+.search input:focus{border-color:var(--pink)}
+.cats{display:flex;gap:10px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
+.cats::-webkit-scrollbar{display:none}
+.cat{border:2px solid #f3c6e0;background:#fff;color:var(--plum);padding:9px 22px;border-radius:28px;font-weight:700;cursor:pointer;white-space:nowrap}
+.cat.on{background:linear-gradient(135deg,var(--plum),var(--pink));color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(255,61,154,.35)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-top:10px}
+.card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 6px 18px rgba(123,44,191,.10);display:flex;flex-direction:column;border:1px solid #f6dcec}
+.pic{height:150px;display:flex;align-items:center;justify-content:center;font-size:3.2rem;position:relative}
+.pic img{width:100%;height:100%;object-fit:cover}
+.tag{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;font-size:.65rem;padding:2px 8px;border-radius:10px}
+.info{padding:12px;text-align:center;display:flex;flex-direction:column;gap:6px;flex:1}
+.name{font-weight:700;font-size:.95rem}
+.price{color:var(--pink);font-weight:900;font-size:1.1rem}
+.add{margin-top:auto;border:0;background:linear-gradient(135deg,var(--plum),var(--pink));color:#fff;padding:9px;border-radius:12px;font-weight:700;cursor:pointer}
+.bar{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,#ff4fa0,#9b2be0);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;border-radius:22px 22px 0 0;font-weight:700;z-index:5}
+.bar.hide{display:none}
+.modal{position:fixed;inset:0;background:rgba(20,5,25,.6);display:none;align-items:flex-end;justify-content:center;z-index:10}
+.modal.open{display:flex}
+.sheet{background:#fff;width:100%;max-width:520px;max-height:90vh;overflow:auto;border-radius:26px 26px 0 0;padding:20px}
+.sheet h2{margin-bottom:12px;color:var(--plum)}
+.line{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px dashed #f0d3e5;gap:8px}
+.qty button{width:28px;height:28px;border-radius:50%;border:0;background:#f7e0ef;color:var(--plum);font-weight:900;cursor:pointer}
+.qty span{display:inline-block;min-width:22px;text-align:center;font-weight:700}
+.code{display:flex;gap:8px;margin:14px 0 6px}
+.code input{flex:1;padding:11px 14px;border:2px solid #f3c6e0;border-radius:14px;font-size:1rem;text-transform:uppercase;direction:ltr;text-align:center}
+.code button{border:0;background:var(--gold);color:#3a2300;font-weight:800;padding:0 18px;border-radius:14px;cursor:pointer}
+.msg{font-size:.85rem;min-height:20px;font-weight:600}
+.ok{color:#198754}.bad{color:#c0392b}
+.gift{background:linear-gradient(135deg,#fff0c2,#ffe0f0);border:2px dashed var(--gold);border-radius:14px;padding:10px;margin:8px 0;font-weight:700;text-align:center}
+.tot{display:flex;justify-content:space-between;padding:5px 0}
+.tot.big{font-size:1.2rem;font-weight:900;color:var(--plum)}
+.field{width:100%;padding:11px 14px;border:2px solid #f3c6e0;border-radius:14px;margin:6px 0;font-size:1rem}
+.wa{width:100%;margin-top:12px;border:0;background:var(--wa);color:#fff;font-size:1.05rem;font-weight:800;padding:14px;border-radius:16px;cursor:pointer}
+.close{float:left;background:none;border:0;font-size:1.6rem;cursor:pointer}
+.empty{text-align:center;padding:40px;color:#999}
+
+.foot{text-align:center;margin:30px 0 10px}.foot button{background:none;border:0;color:#b9a3c4;font-size:.8rem;cursor:pointer}
+.tabs{display:flex;gap:8px;margin:10px 0}.tabs button{flex:1;padding:9px;border:2px solid #f3c6e0;border-radius:12px;background:#fff;font-weight:700;color:var(--plum);cursor:pointer}.tabs button.on{background:linear-gradient(135deg,var(--pink),var(--plum));color:#fff;border-color:transparent}
+.arow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px dashed #f0d3e5;font-size:.92rem}
+.arow img{width:40px;height:40px;border-radius:8px;object-fit:cover}
+.mini{border:0;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer;background:#f7e0ef;color:var(--plum)}.mini.del{background:#ffe0e0;color:#c0392b}
+.sel{width:100%;padding:11px 14px;border:2px solid #f3c6e0;border-radius:14px;margin:6px 0;font-size:1rem;background:#fff}
+.save{width:100%;margin-top:8px;border:0;background:linear-gradient(135deg,var(--pink),var(--plum));color:#fff;font-weight:800;padding:12px;border-radius:14px;cursor:pointer}
+.demo{background:#fff3cd;color:#664d03;border-radius:12px;padding:8px;font-size:.8rem;margin-bottom:8px;text-align:center}
+.hint{font-size:.78rem;color:#8a6a99;margin:2px 0 6px}
+.oos{opacity:.55}
+</style>
+</head>
+<body>
+<div class="notice" id="notice">نسخة تجريبية: المنتجات والأسعار والأكواد أمثلة مؤقتة</div>
+<header>
+  <img class="logo" src="logo.png" alt="Velvet Hype">
+  <p>مكياج • عطور • عناية</p>
+</header>
+<div class="wrap">
+  <div class="search"><input id="q" placeholder="ابحث عن منتج..."></div>
+  <div class="cats" id="cats"></div>
+  <div class="grid" id="grid"></div>
+  <div class="foot"><button id="adminOpen">دخول الإدارة</button></div>
+</div>
+<div class="bar hide" id="bar"><span id="barCount">السلة (0)</span><span id="barTotal">0 ج.م</span></div>
+
+<div class="modal" id="modal"><div class="sheet">
+  <button class="close" id="closeBtn">×</button>
+  <h2>سلتك</h2>
+  <div id="lines"></div>
+  <div class="code"><input id="codeIn" placeholder="كود الخصم"><button id="codeBtn">تطبيق</button></div>
+  <div class="msg" id="codeMsg"></div>
+  <div id="giftBox"></div>
+  <div class="tot"><span>المجموع</span><span id="sub">0</span></div>
+  <div class="tot" id="discRow" style="display:none"><span>الخصم</span><span id="disc">0</span></div>
+  <div class="tot big"><span>الإجمالي</span><span id="total">0</span></div>
+  <input class="field" id="cname" placeholder="الاسم">
+  <input class="field" id="caddr" placeholder="العنوان">
+  <button class="wa" id="sendBtn">إرسال الطلب عبر واتساب</button>
+</div></div>
+
+<div class="modal" id="admin"><div class="sheet">
+  <button class="close" id="adminClose">×</button>
+  <h2>لوحة الإدارة</h2>
+  <div id="demoNote" class="demo" style="display:none">وضع تجريبي: التعديلات بتتحفظ على المتصفح ده بس. بعد ربط Firebase بتظهر لكل الزباين.</div>
+  <div id="loginBox" style="display:none">
+    <input class="field" id="aEmail" type="email" placeholder="إيميل الإدارة" style="direction:ltr;text-align:right">
+    <input class="field" id="aPass" type="password" placeholder="كلمة المرور" style="direction:ltr;text-align:right">
+    <div class="msg bad" id="loginErr"></div>
+    <button class="save" id="loginBtn">دخول</button>
+  </div>
+  <div id="panel" style="display:none">
+    <div class="tabs"><button data-t="products" class="on">المنتجات</button><button data-t="cats">الأقسام</button><button data-t="codes">الأكواد</button></div>
+    <div id="tab"></div>
+    <button class="mini" id="logoutBtn" style="margin-top:14px">تسجيل خروج</button>
+  </div>
+</div></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+const WHATSAPP_NUMBER="201227093936", CUR="ج.م";
+// ضع إعدادات Firebase هنا بعد إنشاء المشروع. لو فاضية الصفحة بتشتغل في الوضع التجريبي.
+const FIREBASE_CONFIG = null; // {apiKey:"",authDomain:"",projectId:"",...}
+const LIVE = !!FIREBASE_CONFIG;
+const $=id=>document.getElementById(id), esc=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let D={products:[],cats:[],codes:[]}, cart={}, cat="الكل", applied=null, isAdmin=false, tab="products", db, auth;
+
+/* ---------- طبقة البيانات ---------- */
+const SEED={
+ cats:[{id:"c1",name:"مكياج",order:1},{id:"c2",name:"عطور",order:2},{id:"c3",name:"عناية",order:3}],
+ products:[
+  {id:"p1",name:"أحمر شفاه (نموذج)",cat:"مكياج",price:120,img:"",on:true},
+  {id:"p2",name:"عطر شبابي (نموذج)",cat:"عطور",price:400,img:"",on:true},
+  {id:"p3",name:"كريم ترطيب (نموذج)",cat:"عناية",price:130,img:"",on:true}],
+ codes:[{id:"VH10",type:"percent",value:10,gift:"",on:true},{id:"GIFT1",type:"percent",value:10,gift:"هدية مجانية مع الطلب",on:true}]};
+const KEY={products:"products",cats:"categories",codes:"codes"};
+function demoLoad(){let d;try{d=JSON.parse(localStorage.getItem("vh_demo"))}catch(e){}D=d||JSON.parse(JSON.stringify(SEED));}
+function demoSave(){try{localStorage.setItem("vh_demo",JSON.stringify(D))}catch(e){}}
+async function put(kind,obj){
+ if(LIVE){const {id,...rest}=obj;await db.collection(KEY[kind]).doc(id).set(rest)}
+ else{const i=D[kind].findIndex(x=>x.id===obj.id);i>=0?D[kind][i]=obj:D[kind].push(obj);demoSave();refresh()}
+}
+async function del(kind,id){
+ if(LIVE)await db.collection(KEY[kind]).doc(id).delete();
+ else{D[kind]=D[kind].filter(x=>x.id!==id);demoSave();refresh()}
+}
+function refresh(){if(cat!=="الكل"&&!D.cats.some(c=>c.name===cat))cat="الكل";renderCats();renderGrid();renderCart();if(isAdmin)renderTab()}
+function init(){
+ if(LIVE){
+  firebase.initializeApp(FIREBASE_CONFIG);db=firebase.firestore();auth=firebase.auth();
+  $("notice").style.display="none";
+  ["products","cats","codes"].forEach(k=>db.collection(KEY[k]).onSnapshot(sn=>{D[k]=sn.docs.map(d=>({id:d.id,...d.data()}));if(k==="cats")D.cats.sort((a,b)=>(a.order||0)-(b.order||0));refresh();if(k==="codes"&&urlCode&&!applied)applyCode(urlCode)}));
+  auth.onAuthStateChanged(u=>{isAdmin=!!u;showAdmin()});
+ }else{demoLoad();refresh();if(urlCode)applyCode(urlCode)}
+}
+
+/* ---------- المتجر ---------- */
+const prod=id=>D.products.find(p=>p.id===id);
+function renderCats(){const l=["الكل",...D.cats.map(c=>c.name)];$("cats").innerHTML=l.map(c=>`<button class="cat ${c===cat?"on":""}" data-c="${esc(c)}">${esc(c)}</button>`).join("")}
+function renderGrid(){
+ const q=$("q").value.trim().toLowerCase();
+ const l=D.products.filter(p=>(cat==="الكل"||p.cat===cat)&&p.name.toLowerCase().includes(q));
+ $("grid").innerHTML=l.length?l.map(p=>`<div class="card ${p.on===false?"oos":""}"><div class="pic" style="background:#ffe0f0">${p.img?`<img src="${p.img}" alt="">`:"🛍️"}<span class="tag">${esc(p.cat||"")}</span></div><div class="info"><div class="name">${esc(p.name)}</div><div class="price">${p.price} ${CUR}</div>${p.on===false?`<button class="add" disabled style="opacity:.5">غير متوفر</button>`:`<button class="add" data-a="${p.id}">أضف للسلة</button>`}</div></div>`).join(""):`<div class="empty" style="grid-column:1/-1">${D.products.length?"مفيش نتائج":"المنتجات قريباً ✨"}</div>`;
+}
+function calc(){let sub=0,n=0;for(const id in cart){const p=prod(id);if(!p){delete cart[id];continue}sub+=p.price*cart[id];n+=cart[id]}
+ let d=0;if(applied&&applied.type==="percent")d=Math.round(sub*applied.value/100);return{sub,n,d,total:sub-d}}
+function label(c){return (c.type==="percent"?`خصم ${c.value}%`:"")+(c.gift?(c.type==="percent"?" + ":"")+"هدية":"")}
+function renderCart(){
+ const c=calc();$("bar").classList.toggle("hide",c.n===0);
+ $("barCount").textContent=`السلة (${c.n})`;$("barTotal").textContent=`${c.total} ${CUR}`;
+ $("lines").innerHTML=c.n?Object.keys(cart).map(id=>{const p=prod(id);return `<div class="line"><span>${esc(p.name)}</span><span class="qty"><button data-m="${id}">−</button><span>${cart[id]}</span><button data-p="${id}">+</button></span><b>${p.price*cart[id]}</b></div>`}).join(""):`<div class="empty">السلة فاضية</div>`;
+ $("sub").textContent=`${c.sub} ${CUR}`;$("discRow").style.display=c.d?"flex":"none";$("disc").textContent=`- ${c.d} ${CUR}`;$("total").textContent=`${c.total} ${CUR}`;
+ $("giftBox").innerHTML=applied&&applied.gift?`<div class="gift">🎁 ${esc(applied.gift)}</div>`:"";
+}
+function applyCode(raw){
+ const k=raw.trim().toUpperCase();if(!k)return;
+ const c=D.codes.find(x=>x.id.toUpperCase()===k&&x.on!==false);
+ if(c){applied={...c,key:k};$("codeMsg").className="msg ok";$("codeMsg").textContent="تم تطبيق الكود: "+label(c);$("codeIn").value=k}
+ else{applied=null;$("codeMsg").className="msg bad";$("codeMsg").textContent="الكود غير صحيح"}
+ renderCart();
+}
+$("q").addEventListener("input",renderGrid);
+$("bar").onclick=()=>$("modal").classList.add("open");
+$("closeBtn").onclick=()=>$("modal").classList.remove("open");
+$("modal").addEventListener("click",e=>{if(e.target.id==="modal")$("modal").classList.remove("open")});
+$("codeBtn").onclick=()=>applyCode($("codeIn").value);
+$("sendBtn").onclick=()=>{
+ const c=calc();if(!c.n)return;
+ let m="*طلب جديد من Velvet Hype* 💄\n\n";
+ for(const id in cart){const p=prod(id);m+=`• ${p.name} × ${cart[id]} = ${p.price*cart[id]} ${CUR}\n`}
+ m+=`\nالمجموع: ${c.sub} ${CUR}\n`;
+ if(applied){m+=`كود الخصم: ${applied.key} (${label(applied)})\nالخصم: ${c.d} ${CUR}\n`;if(applied.gift)m+=`الهدية: ${applied.gift}\n`}
+ m+=`*الإجمالي: ${c.total} ${CUR}*\n\nالاسم: ${$("cname").value}\nالعنوان: ${$("caddr").value}`;
+ window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(m)}`,"_blank");
+};
+
+/* ---------- الإدارة ---------- */
+function showAdmin(){
+ $("demoNote").style.display=LIVE?"none":"block";
+ $("loginBox").style.display=isAdmin?"none":"block";$("panel").style.display=isAdmin?"block":"none";
+ if(isAdmin)renderTab();
+}
+$("adminOpen").onclick=()=>{$("admin").classList.add("open");if(!LIVE)isAdmin=true;showAdmin()};
+$("adminClose").onclick=()=>$("admin").classList.remove("open");
+$("loginBtn").onclick=async()=>{try{$("loginErr").textContent="";await auth.signInWithEmailAndPassword($("aEmail").value.trim(),$("aPass").value)}catch(e){$("loginErr").textContent="الإيميل أو كلمة المرور غلط"}};
+$("logoutBtn").onclick=()=>{if(LIVE)auth.signOut();else{isAdmin=false;$("admin").classList.remove("open")}};
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{tab=b.dataset.t;document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x===b));renderTab()});
+const uid=()=>"x"+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+function resize(file){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,600/Math.max(im.width,im.height));const c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.75))};im.src=r.result};r.readAsDataURL(file)})}
+let editing=null,pendingImg="";
+function renderTab(){
+ const t=$("tab");
+ if(tab==="products"){
+  const e=editing&&D.products.find(p=>p.id===editing)||{};
+  t.innerHTML=`<div>${D.products.map(p=>`<div class="arow"><span style="display:flex;gap:8px;align-items:center">${p.img?`<img src="${p.img}">`:"🛍️"}<span>${esc(p.name)}<br><small>${p.price} ${CUR} • ${esc(p.cat||"")}${p.on===false?" • غير متوفر":""}</small></span></span><span><button class="mini" data-e="${p.id}">تعديل</button> <button class="mini del" data-d="${p.id}">حذف</button></span></div>`).join("")||'<div class="empty">مفيش منتجات</div>'}</div>
+  <h3 style="margin:14px 0 4px">${e.id?"تعديل منتج":"إضافة منتج"}</h3>
+  <input class="field" id="pName" placeholder="اسم المنتج" value="${esc(e.name||"")}">
+  <input class="field" id="pPrice" type="number" placeholder="السعر" value="${e.price||""}">
+  <select class="sel" id="pCat">${D.cats.map(c=>`<option ${c.name===e.cat?"selected":""}>${esc(c.name)}</option>`).join("")}</select>
+  <input class="field" id="pFile" type="file" accept="image/*"><div class="hint">الصورة بتتصغر لوحدها${e.img?" (سيبها فاضية للإبقاء على الصورة الحالية)":""}</div>
+  <label><input type="checkbox" id="pOn" ${e.on===false?"":"checked"}> متوفر</label>
+  <button class="save" id="pSave">حفظ</button>${e.id?'<button class="mini" id="pCancel" style="margin-top:8px">إلغاء التعديل</button>':""}`;
+  $("pSave").onclick=async()=>{const name=$("pName").value.trim(),price=Number($("pPrice").value);if(!name||!(price>=0)||!$("pCat").value){alert("اكتب الاسم والسعر واختار قسم");return}
+   const f=$("pFile").files[0];const img=f?await resize(f):(e.img||"");
+   await put("products",{id:e.id||uid(),name,price,cat:$("pCat").value,img,on:$("pOn").checked});editing=null;renderTab()};
+  if($("pCancel"))$("pCancel").onclick=()=>{editing=null;renderTab()};
+ }
+ if(tab==="cats"){
+  t.innerHTML=`${D.cats.map(c=>`<div class="arow"><span>${esc(c.name)}</span><button class="mini del" data-dc="${c.id}">حذف</button></div>`).join("")||'<div class="empty">مفيش أقسام</div>'}
+  <input class="field" id="cName" placeholder="اسم القسم الجديد"><button class="save" id="cSave">إضافة قسم</button>`;
+  $("cSave").onclick=async()=>{const name=$("cName").value.trim();if(!name)return;await put("cats",{id:uid(),name,order:Date.now()});};
+ }
+ if(tab==="codes"){
+  t.innerHTML=`<div class="hint">كل كارت QR ليه كود. الرابط: ?code=الكود</div>${D.codes.map(c=>`<div class="arow"><span><b dir="ltr">${esc(c.id)}</b><br><small>${esc(label(c))}${c.on===false?" • موقوف":""}</small></span><span><button class="mini" data-t="${c.id}">${c.on===false?"تفعيل":"إيقاف"}</button> <button class="mini del" data-dk="${c.id}">حذف</button></span></div>`).join("")||'<div class="empty">مفيش أكواد</div>'}
+  <h3 style="margin:14px 0 4px">كود جديد</h3>
+  <input class="field" id="kId" placeholder="الكود (إنجليزي)" style="direction:ltr;text-transform:uppercase">
+  <input class="field" id="kVal" type="number" placeholder="نسبة الخصم % (اتركها فاضية لو مفيش)">
+  <input class="field" id="kGift" placeholder="الهدية (اختياري)">
+  <button class="save" id="kSave">إضافة الكود</button>`;
+  $("kSave").onclick=async()=>{const id=$("kId").value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g,"");const v=Number($("kVal").value)||0,g=$("kGift").value.trim();if(!id||(!v&&!g)){alert("اكتب الكود ونسبة خصم أو هدية");return}
+   await put("codes",{id,type:"percent",value:v,gift:g,on:true})};
+ }
+}
+document.addEventListener("click",async e=>{
+ const d=e.target.dataset;if(!d)return;
+ if(d.c){cat=d.c;renderCats();renderGrid()}
+ if(d.a){cart[d.a]=(cart[d.a]||0)+1;renderCart()}
+ if(d.p){cart[d.p]++;renderCart()}
+ if(d.m){if(--cart[d.m]<=0)delete cart[d.m];renderCart()}
+ if(d.e){editing=d.e;renderTab()}
+ if(d.d&&confirm("تحذف المنتج؟"))await del("products",d.d);
+ if(d.dc&&confirm("تحذف القسم؟"))await del("cats",d.dc);
+ if(d.dk&&confirm("تحذف الكود؟"))await del("codes",d.dk);
+ if(d.t&&e.target.closest("#tab")){const c=D.codes.find(x=>x.id===d.t);await put("codes",{...c,on:c.on===false})}
+});
+const urlCode=new URLSearchParams(location.search).get("code");
+init();
+</script>
+</body>
+</html>
