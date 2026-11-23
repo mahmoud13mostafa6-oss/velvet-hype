@@ -62,6 +62,27 @@ header p{color:#7a3a8c;font-weight:700;margin-top:2px}
 .demo{background:#fff3cd;color:#664d03;border-radius:12px;padding:8px;font-size:.8rem;margin-bottom:8px;text-align:center}
 .hint{font-size:.78rem;color:#8a6a99;margin:2px 0 6px}
 .oos{opacity:.55}
+:root{--bg:#fff0f7;--pink:#ff7eb6;--plum:#b388ff;--gold:#ffd166;--ink:#4a2a5a}
+body{background:linear-gradient(180deg,#ffe3f1 0,#efe3ff 45%,#e3f4ff 100%) fixed}
+header{background:linear-gradient(135deg,#ffd6ea,#e2d1ff);border:0;border-radius:0 0 40px 40px;padding-bottom:26px;box-shadow:0 10px 30px #ff7eb633}
+.logo{height:120px}
+header p{color:#8a4fb0}
+.search input{border:3px solid #fff;box-shadow:0 6px 20px #b388ff44;border-radius:34px}
+.cat{border:3px solid #fff;background:#ffffffcc;color:#9a5fd0;box-shadow:0 4px 12px #b388ff33}
+.cat.on{background:linear-gradient(135deg,#ff7eb6,#b388ff);box-shadow:0 6px 16px #ff7eb688}
+.card{border:3px solid #fff;border-radius:30px;background:#ffffffee;box-shadow:0 12px 28px #b388ff40}
+.pic{background:linear-gradient(135deg,#ffe3f1,#e8dcff)}
+.price{color:#ff5fa2}
+.add{border-radius:20px;background:linear-gradient(135deg,#ff7eb6,#b388ff);box-shadow:0 6px 14px #ff7eb677}
+.bar{border-radius:30px 30px 0 0;background:linear-gradient(135deg,#ff7eb6,#b388ff)}
+.tag{background:#ff7eb6}
+.sheet{background:linear-gradient(180deg,#fff,#fff0f9);border-radius:34px 34px 0 0}
+.field,.sel,.code input{border:3px solid #f3d9ff;border-radius:20px;background:#fff}
+.code button{background:linear-gradient(135deg,#ffd166,#ffb3d9);border-radius:20px}
+.tabs button{border:3px solid #fff;background:#ffffffcc;border-radius:18px;box-shadow:0 4px 12px #b388ff33}
+.tabs button.on,.save{background:linear-gradient(135deg,#ff7eb6,#b388ff)}
+.save,.wa{border-radius:22px}
+.mini{background:#f1e6ff}
 </style>
 </head>
 <body>
@@ -116,7 +137,7 @@ header p{color:#7a3a8c;font-weight:700;margin-top:2px}
 <script>
 const WHATSAPP_NUMBER="201227093936", CUR="ج.م";
 // ضع إعدادات Firebase هنا بعد إنشاء المشروع. لو فاضية الصفحة بتشتغل في الوضع التجريبي.
-const FIREBASE_CONFIG = null; // {apiKey:"",authDomain:"",projectId:"",...}
+const FIREBASE_CONFIG = {"apiKey": "AIzaSyDDyI3SatDDsuagbzeySRYM3W4ib-q9dA4", "authDomain": "velvet-hype.firebaseapp.com", "projectId": "velvet-hype", "storageBucket": "velvet-hype.firebasestorage.app", "messagingSenderId": "330682449498", "appId": "1:330682449498:web:4bd2bcf29626b3ffd32263"}; // {apiKey:"",authDomain:"",projectId:"",...}
 const LIVE = !!FIREBASE_CONFIG;
 const $=id=>document.getElementById(id), esc=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let D={products:[],cats:[],codes:[]}, cart={}, cat="الكل", applied=null, isAdmin=false, tab="products", db, auth;
@@ -144,8 +165,8 @@ function refresh(){if(cat!=="الكل"&&!D.cats.some(c=>c.name===cat))cat="ال�
 function init(){
  if(LIVE){
   firebase.initializeApp(FIREBASE_CONFIG);db=firebase.firestore();auth=firebase.auth();
-  $("notice").style.display="none";
-  ["products","cats","codes"].forEach(k=>db.collection(KEY[k]).onSnapshot(sn=>{D[k]=sn.docs.map(d=>({id:d.id,...d.data()}));if(k==="cats")D.cats.sort((a,b)=>(a.order||0)-(b.order||0));refresh();if(k==="codes"&&urlCode&&!applied)applyCode(urlCode)}));
+  $("notice").textContent="المتجر قيد التجهيز، المنتجات قريباً";
+  ["products","cats","codes"].forEach(k=>db.collection(KEY[k]).onSnapshot(sn=>{D[k]=sn.docs.map(d=>({id:d.id,...d.data()}));if(k==="cats")D.cats.sort((a,b)=>(a.order||0)-(b.order||0));$("notice").style.display=D.products.length?"none":"block";refresh();if(k==="codes"&&urlCode&&!applied)applyCode(urlCode)}));
   auth.onAuthStateChanged(u=>{isAdmin=!!u;showAdmin()});
  }else{demoLoad();refresh();if(urlCode)applyCode(urlCode)}
 }
