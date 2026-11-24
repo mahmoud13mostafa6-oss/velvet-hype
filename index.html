@@ -83,6 +83,23 @@ header p{color:#8a4fb0}
 .tabs button.on,.save{background:linear-gradient(135deg,#ff7eb6,#b388ff)}
 .save,.wa{border-radius:22px}
 .mini{background:#f1e6ff}
+.pic,.name{cursor:pointer}
+.dmain{width:100%;aspect-ratio:1/1;border-radius:22px;background:#ffe3f1;display:flex;align-items:center;justify-content:center;font-size:4rem;overflow:hidden}
+.dmain img{width:100%;height:100%;object-fit:contain;background:#fff}
+.thumbs{display:flex;gap:8px;overflow-x:auto;margin:10px 0}
+.thumbs img{width:58px;height:58px;border-radius:12px;object-fit:cover;border:3px solid #fff;box-shadow:0 3px 8px #b388ff44;cursor:pointer;flex:none}
+.thumbs img.on{border-color:#ff7eb6}
+.dname{font-size:1.3rem;font-weight:900;margin:8px 0 2px}
+.ddesc{white-space:pre-line;line-height:1.7;color:#5a3a6a;margin:8px 0}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.chip{display:flex;align-items:center;gap:6px;border:3px solid #fff;background:#ffffffcc;border-radius:20px;padding:6px 12px;font-weight:700;cursor:pointer;box-shadow:0 3px 8px #b388ff33}
+.chip i{width:18px;height:18px;border-radius:50%;border:1px solid #0003;display:inline-block}
+.chip.on{border-color:#ff7eb6;background:#fff0f7}
+.athumbs{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+.athumbs div{position:relative}.athumbs img{width:64px;height:64px;border-radius:10px;object-fit:cover}
+.athumbs button{position:absolute;top:-6px;left:-6px;width:22px;height:22px;border-radius:50%;border:0;background:#c0392b;color:#fff;cursor:pointer}
+.crow{display:flex;gap:6px;align-items:center;margin:4px 0}.crow input[type=text]{flex:1;padding:9px 12px;border:3px solid #f3d9ff;border-radius:16px;font-size:1rem}.crow input[type=color]{width:44px;height:40px;border:0;background:none;padding:0}
+textarea.field{min-height:80px;resize:vertical}
 </style>
 </head>
 <body>
@@ -113,6 +130,8 @@ header p{color:#8a4fb0}
   <input class="field" id="caddr" placeholder="العنوان">
   <button class="wa" id="sendBtn">إرسال الطلب عبر واتساب</button>
 </div></div>
+
+<div class="modal" id="detail"><div class="sheet" id="dsheet"></div></div>
 
 <div class="modal" id="admin"><div class="sheet">
   <button class="close" id="adminClose">×</button>
@@ -173,19 +192,27 @@ function init(){
 
 /* ---------- المتجر ---------- */
 const prod=id=>D.products.find(p=>p.id===id);
+const pimgs=p=>p.images&&p.images.length?p.images:(p.img?[p.img]:[]);
+const kp=k=>k.split("|")[0], kc=k=>k.split("|").slice(1).join("|");
+let dv={id:null,i:0,color:""};
+function openDetail(id,i){const p=prod(id);if(!p)return;if(dv.id!==id)dv={id,i:0,color:""};if(i!=null)dv.i=i;
+ const im=pimgs(p),cs=p.colors||[];
+ $("dsheet").innerHTML=`<button class="close" id="dClose">×</button><div class="dmain">${im[dv.i]?`<img src="${im[dv.i]}" alt="">`:"🛍️"}</div>${im.length>1?`<div class="thumbs">${im.map((x,j)=>`<img src="${x}" data-th="${j}" class="${j===dv.i?"on":""}">`).join("")}</div>`:""}<div class="dname">${esc(p.name)}</div><div class="price">${p.price} ${CUR}</div>${p.desc?`<div class="ddesc">${esc(p.desc)}</div>`:""}${cs.length?`<div><b>اللون:</b></div><div class="chips">${cs.map((c,j)=>`<button class="chip ${dv.color===c.name?"on":""}" data-cc="${j}"><i style="background:${esc(c.hex||"#ccc")}"></i>${esc(c.name)}</button>`).join("")}</div>`:""}<div class="msg bad" id="dMsg"></div>${p.on===false?`<button class="add" disabled style="opacity:.5;width:100%">غير متوفر</button>`:`<button class="wa" style="background:linear-gradient(135deg,#ff7eb6,#b388ff)" id="dAdd">أضف للسلة</button>`}`;
+ $("detail").classList.add("open");}
+$("detail").addEventListener("click",e=>{if(e.target.id==="detail"||e.target.id==="dClose")$("detail").classList.remove("open")});
 function renderCats(){const l=["الكل",...D.cats.map(c=>c.name)];$("cats").innerHTML=l.map(c=>`<button class="cat ${c===cat?"on":""}" data-c="${esc(c)}">${esc(c)}</button>`).join("")}
 function renderGrid(){
  const q=$("q").value.trim().toLowerCase();
  const l=D.products.filter(p=>(cat==="الكل"||p.cat===cat)&&p.name.toLowerCase().includes(q));
- $("grid").innerHTML=l.length?l.map(p=>`<div class="card ${p.on===false?"oos":""}"><div class="pic" style="background:#ffe0f0">${p.img?`<img src="${p.img}" alt="">`:"🛍️"}<span class="tag">${esc(p.cat||"")}</span></div><div class="info"><div class="name">${esc(p.name)}</div><div class="price">${p.price} ${CUR}</div>${p.on===false?`<button class="add" disabled style="opacity:.5">غير متوفر</button>`:`<button class="add" data-a="${p.id}">أضف للسلة</button>`}</div></div>`).join(""):`<div class="empty" style="grid-column:1/-1">${D.products.length?"مفيش نتائج":"المنتجات قريباً ✨"}</div>`;
+ $("grid").innerHTML=l.length?l.map(p=>`<div class="card ${p.on===false?"oos":""}"><div class="pic" data-v="${p.id}" style="background:#ffe0f0">${pimgs(p)[0]?`<img data-v="${p.id}" src="${pimgs(p)[0]}" alt="">`:"🛍️"}<span class="tag">${esc(p.cat||"")}</span></div><div class="info"><div class="name" data-v="${p.id}">${esc(p.name)}</div><div class="price">${p.price} ${CUR}</div>${p.on===false?`<button class="add" disabled style="opacity:.5">غير متوفر</button>`:((p.colors&&p.colors.length)?`<button class="add" data-v="${p.id}">اختار اللون</button>`:`<button class="add" data-a="${p.id}">أضف للسلة</button>`)}</div></div>`).join(""):`<div class="empty" style="grid-column:1/-1">${D.products.length?"مفيش نتائج":"المنتجات قريباً ✨"}</div>`;
 }
-function calc(){let sub=0,n=0;for(const id in cart){const p=prod(id);if(!p){delete cart[id];continue}sub+=p.price*cart[id];n+=cart[id]}
+function calc(){let sub=0,n=0;for(const id in cart){const p=prod(kp(id));if(!p){delete cart[id];continue}sub+=p.price*cart[id];n+=cart[id]}
  let d=0;if(applied&&applied.type==="percent")d=Math.round(sub*applied.value/100);return{sub,n,d,total:sub-d}}
 function label(c){return (c.type==="percent"?`خصم ${c.value}%`:"")+(c.gift?(c.type==="percent"?" + ":"")+"هدية":"")}
 function renderCart(){
  const c=calc();$("bar").classList.toggle("hide",c.n===0);
  $("barCount").textContent=`السلة (${c.n})`;$("barTotal").textContent=`${c.total} ${CUR}`;
- $("lines").innerHTML=c.n?Object.keys(cart).map(id=>{const p=prod(id);return `<div class="line"><span>${esc(p.name)}</span><span class="qty"><button data-m="${id}">−</button><span>${cart[id]}</span><button data-p="${id}">+</button></span><b>${p.price*cart[id]}</b></div>`}).join(""):`<div class="empty">السلة فاضية</div>`;
+ $("lines").innerHTML=c.n?Object.keys(cart).map(id=>{const p=prod(kp(id));return `<div class="line"><span>${esc(p.name)}${kc(id)?` <small>(${esc(kc(id))})</small>`:""}</span><span class="qty"><button data-m="${esc(id)}">−</button><span>${cart[id]}</span><button data-p="${esc(id)}">+</button></span><b>${p.price*cart[id]}</b></div>`}).join(""):`<div class="empty">السلة فاضية</div>`;
  $("sub").textContent=`${c.sub} ${CUR}`;$("discRow").style.display=c.d?"flex":"none";$("disc").textContent=`- ${c.d} ${CUR}`;$("total").textContent=`${c.total} ${CUR}`;
  $("giftBox").innerHTML=applied&&applied.gift?`<div class="gift">🎁 ${esc(applied.gift)}</div>`:"";
 }
@@ -204,7 +231,7 @@ $("codeBtn").onclick=()=>applyCode($("codeIn").value);
 $("sendBtn").onclick=()=>{
  const c=calc();if(!c.n)return;
  let m="*طلب جديد من Velvet Hype* 💄\n\n";
- for(const id in cart){const p=prod(id);m+=`• ${p.name} × ${cart[id]} = ${p.price*cart[id]} ${CUR}\n`}
+ for(const id in cart){const p=prod(kp(id));m+=`• ${p.name}${kc(id)?" ("+kc(id)+")":""} × ${cart[id]} = ${p.price*cart[id]} ${CUR}\n`}
  m+=`\nالمجموع: ${c.sub} ${CUR}\n`;
  if(applied){m+=`كود الخصم: ${applied.key} (${label(applied)})\nالخصم: ${c.d} ${CUR}\n`;if(applied.gift)m+=`الهدية: ${applied.gift}\n`}
  m+=`*الإجمالي: ${c.total} ${CUR}*\n\nالاسم: ${$("cname").value}\nالعنوان: ${$("caddr").value}`;
@@ -223,24 +250,35 @@ $("loginBtn").onclick=async()=>{try{$("loginErr").textContent="";await auth.sign
 $("logoutBtn").onclick=()=>{if(LIVE)auth.signOut();else{isAdmin=false;$("admin").classList.remove("open")}};
 document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{tab=b.dataset.t;document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("on",x===b));renderTab()});
 const uid=()=>"x"+Date.now().toString(36)+Math.random().toString(36).slice(2,5);
-function resize(file){return new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,600/Math.max(im.width,im.height));const c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.75))};im.src=r.result};r.readAsDataURL(file)})}
-let editing=null,pendingImg="";
+function resize(file,max){max=max||600;return new Promise(res=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.72))};im.src=r.result};r.readAsDataURL(file)})}
+function keep(){if(!$("pName"))return;form.colors.forEach((c,j)=>{const n=document.querySelector(`[data-cn="${j}"]`),h=document.querySelector(`[data-ch="${j}"]`);if(n)c.name=n.value;if(h)c.hex=h.value});form.draft={name:$("pName").value,price:$("pPrice").value,cat:$("pCat").value,desc:$("pDesc").value,on:$("pOn").checked}}
+let editing=null,form={images:[],colors:[]},formFor=null;
 function renderTab(){
  const t=$("tab");
  if(tab==="products"){
   const e=editing&&D.products.find(p=>p.id===editing)||{};
-  t.innerHTML=`<div>${D.products.map(p=>`<div class="arow"><span style="display:flex;gap:8px;align-items:center">${p.img?`<img src="${p.img}">`:"🛍️"}<span>${esc(p.name)}<br><small>${p.price} ${CUR} • ${esc(p.cat||"")}${p.on===false?" • غير متوفر":""}</small></span></span><span><button class="mini" data-e="${p.id}">تعديل</button> <button class="mini del" data-d="${p.id}">حذف</button></span></div>`).join("")||'<div class="empty">مفيش منتجات</div>'}</div>
+  if(formFor!==(e.id||"new")){formFor=e.id||"new";form={draft:null,images:[...pimgs(e)],colors:(e.colors||[]).map(c=>({...c}))}}
+  t.innerHTML=`<div>${D.products.map(p=>`<div class="arow"><span style="display:flex;gap:8px;align-items:center">${pimgs(p)[0]?`<img src="${pimgs(p)[0]}">`:"🛍️"}<span>${esc(p.name)}<br><small>${p.price} ${CUR} • ${esc(p.cat||"")}${p.on===false?" • غير متوفر":""}</small></span></span><span><button class="mini" data-e="${p.id}">تعديل</button> <button class="mini del" data-d="${p.id}">حذف</button></span></div>`).join("")||'<div class="empty">مفيش منتجات</div>'}</div>
   <h3 style="margin:14px 0 4px">${e.id?"تعديل منتج":"إضافة منتج"}</h3>
   <input class="field" id="pName" placeholder="اسم المنتج" value="${esc(e.name||"")}">
   <input class="field" id="pPrice" type="number" placeholder="السعر" value="${e.price||""}">
   <select class="sel" id="pCat">${D.cats.map(c=>`<option ${c.name===e.cat?"selected":""}>${esc(c.name)}</option>`).join("")}</select>
-  <input class="field" id="pFile" type="file" accept="image/*"><div class="hint">الصورة بتتصغر لوحدها${e.img?" (سيبها فاضية للإبقاء على الصورة الحالية)":""}</div>
-  <label><input type="checkbox" id="pOn" ${e.on===false?"":"checked"}> متوفر</label>
+  <textarea class="field" id="pDesc" placeholder="وصف المنتج">${esc(e.desc||"")}</textarea>
+  <b>الصور (لحد 5)</b>
+  <div class="athumbs">${form.images.map((x,j)=>`<div><img src="${x}"><button data-ri="${j}">×</button></div>`).join("")}</div>
+  <input class="field" id="pFile" type="file" accept="image/*" multiple><div class="hint">اختار صورة أو أكتر. الصورة الأولى هي الرئيسية. بتتصغر لوحدها.</div>
+  <b>الألوان (اختياري، زي العدسات)</b>
+  <div id="colorRows">${form.colors.map((c,j)=>`<div class="crow"><input type="color" value="${esc(c.hex||"#ff7eb6")}" data-ch="${j}"><input type="text" placeholder="اسم اللون" value="${esc(c.name)}" data-cn="${j}"><button class="mini del" data-rc="${j}">×</button></div>`).join("")}</div>
+  <button class="mini" id="addColor">+ إضافة لون</button>
+  <div style="margin-top:8px"><label><input type="checkbox" id="pOn" ${e.on===false?"":"checked"}> متوفر</label></div>
   <button class="save" id="pSave">حفظ</button>${e.id?'<button class="mini" id="pCancel" style="margin-top:8px">إلغاء التعديل</button>':""}`;
-  $("pSave").onclick=async()=>{const name=$("pName").value.trim(),price=Number($("pPrice").value);if(!name||!(price>=0)||!$("pCat").value){alert("اكتب الاسم والسعر واختار قسم");return}
-   const f=$("pFile").files[0];const img=f?await resize(f):(e.img||"");
-   await put("products",{id:e.id||uid(),name,price,cat:$("pCat").value,img,on:$("pOn").checked});editing=null;renderTab()};
-  if($("pCancel"))$("pCancel").onclick=()=>{editing=null;renderTab()};
+  if(form.draft){const d=form.draft;$("pName").value=d.name;$("pPrice").value=d.price;$("pCat").value=d.cat;$("pDesc").value=d.desc;$("pOn").checked=d.on}
+  $("pFile").onchange=async()=>{keep();for(const f of [...$("pFile").files]){if(form.images.length>=5)break;form.images.push(await resize(f,560))}renderTab()};
+  $("addColor").onclick=()=>{keep();form.colors.push({name:"",hex:"#ff7eb6"});renderTab()};
+  $("pSave").onclick=async()=>{keep();const name=$("pName").value.trim(),price=Number($("pPrice").value);if(!name||!(price>=0)||!$("pCat").value){alert("اكتب الاسم والسعر واختار قسم");return}
+   const colors=form.colors.filter(c=>c.name.trim()).map(c=>({name:c.name.trim(),hex:c.hex}));
+   await put("products",{id:e.id||uid(),name,price,cat:$("pCat").value,desc:$("pDesc").value.trim(),images:form.images,img:form.images[0]||"",colors,on:$("pOn").checked});editing=null;formFor=null;renderTab()};
+  if($("pCancel"))$("pCancel").onclick=()=>{editing=null;formFor=null;renderTab()};
  }
  if(tab==="cats"){
   t.innerHTML=`${D.cats.map(c=>`<div class="arow"><span>${esc(c.name)}</span><button class="mini del" data-dc="${c.id}">حذف</button></div>`).join("")||'<div class="empty">مفيش أقسام</div>'}
@@ -261,10 +299,16 @@ function renderTab(){
 document.addEventListener("click",async e=>{
  const d=e.target.dataset;if(!d)return;
  if(d.c){cat=d.c;renderCats();renderGrid()}
- if(d.a){cart[d.a]=(cart[d.a]||0)+1;renderCart()}
+ if(d.a){const k=d.a+"|";cart[k]=(cart[k]||0)+1;renderCart()}
  if(d.p){cart[d.p]++;renderCart()}
  if(d.m){if(--cart[d.m]<=0)delete cart[d.m];renderCart()}
- if(d.e){editing=d.e;renderTab()}
+ if(d.e){editing=d.e;formFor=null;renderTab()}
+ if(d.ri!=null&&d.ri!==undefined&&e.target.closest("#tab")){keep();form.images.splice(+d.ri,1);renderTab()}
+ if(d.rc!=null&&e.target.closest("#tab")){keep();form.colors.splice(+d.rc,1);renderTab()}
+ if(d.v){openDetail(d.v)}
+ if(d.th!=null){openDetail(dv.id,+d.th)}
+ if(d.cc!=null){const p=prod(dv.id);dv.color=p.colors[+d.cc].name;openDetail(dv.id)}
+ if(e.target.id==="dAdd"){const p=prod(dv.id);if(p.colors&&p.colors.length&&!dv.color){$("dMsg").textContent="اختار اللون الأول";return}const k=dv.id+"|"+(dv.color||"");cart[k]=(cart[k]||0)+1;renderCart();$("detail").classList.remove("open")}
  if(d.d&&confirm("تحذف المنتج؟"))await del("products",d.d);
  if(d.dc&&confirm("تحذف القسم؟"))await del("cats",d.dc);
  if(d.dk&&confirm("تحذف الكود؟"))await del("codes",d.dk);
