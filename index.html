@@ -110,6 +110,22 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;ba
 .athumbs button{position:absolute;top:-6px;left:-6px;width:22px;height:22px;border-radius:50%;border:0;background:#c0392b;color:#fff;cursor:pointer}
 .crow{display:flex;gap:6px;align-items:center;margin:4px 0}.crow input[type=text]{flex:1;padding:9px 12px;border:3px solid #f3d9ff;border-radius:16px;font-size:1rem}.crow input[type=color]{width:44px;height:40px;border:0;background:none;padding:0}
 textarea.field{min-height:80px;resize:vertical}
+
+#detail{display:flex;visibility:hidden;opacity:0;transition:opacity .25s ease,visibility 0s linear .25s;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+#detail.open{visibility:visible;opacity:1;transition:opacity .25s ease}
+#detail .sheet{max-width:400px;max-height:82vh;max-height:82dvh;padding:14px 16px 18px;border-radius:26px 26px 0 0;transform:translateY(40px) scale(.97);transition:transform .32s cubic-bezier(.2,.9,.3,1);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;box-shadow:0 -8px 30px #7b2ff733}
+#detail.open .sheet{transform:none}
+#detail .dmain{width:auto;height:min(34vh,230px);aspect-ratio:auto;border-radius:18px;margin:2px 0 0}
+#detail .dmain img{border-radius:18px}
+#detail .thumbs{margin:8px 0;gap:6px}
+#detail .thumbs img{width:44px;height:44px;border-radius:10px;border-width:2px}
+#detail .close{position:absolute;float:none;inset-inline-start:auto;top:8px;left:12px;width:32px;height:32px;line-height:30px;border-radius:50%;background:#ffffffdd;font-size:1.3rem;z-index:2;box-shadow:0 2px 8px #0002;padding:0}
+#detail .sheet{position:relative}
+#detail .dname{font-size:1.05rem;margin-top:6px}
+#detail .price{font-size:1rem}
+#detail .ddesc{font-size:.85rem;margin:4px 0 8px;line-height:1.5}
+#detail .chip{padding:5px 10px;font-size:.8rem}
+@media(min-width:600px){#detail{align-items:center}#detail .sheet{border-radius:26px}}
 </style>
 </head>
 <body>
